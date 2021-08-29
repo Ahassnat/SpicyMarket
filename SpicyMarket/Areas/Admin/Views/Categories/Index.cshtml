@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Category>
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <div class="whiteBackground border" >
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="text-info"> Category List</h2>
+            </div>
+            <div class="col-md-6 text-right">
+                 <partial name="_CreateButtonPartial" />
+            </div>
+        </div>
+
+        <div>
+            @if(Model.Count() == 0)
+            {
+                <p class="text-danger"> No Category ...</p>
+            }
+            else
+            {
+                <table class="table table-striped border">
+                    <tr class="table-secondary">
+                        <th>
+                            @Html.DisplayNameFor(m => m.Name)
+                        </th>
+                       <th>
+
+                       </th>
+                    </tr>
+                  @foreach (var item in Model)
+                  {
+                      <tr>
+                          <td>
+                              @Html.DisplayFor(m => item.Name)
+                          </td>
+                          <td style="width:150px">
+                             <partial name="_OperationButtonEditDeleteDetailsPartial" model="@item.Id" />
+              
+                          </td>
+                      </tr>
+                  }
+
+                </table>
+            }
+        </div>
+    </div>
