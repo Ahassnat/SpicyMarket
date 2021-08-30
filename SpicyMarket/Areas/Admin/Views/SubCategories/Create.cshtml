@@ -1,0 +1,94 @@
+﻿@model CategoryAndSubCategoryViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+<br />
+<h2 class="text-info">Create Sub Category</h2>
+<br />
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="whiteBackground border row">
+    <div class="col-8 border-right">
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row form-group">
+                <div class="col-3">
+                    <label asp-for="SubCategory.Id" class="col-form-label"></label>
+                </div>
+                <div class="col-5">
+                    <select class="form-control" id="ddlCategories" 
+                            asp-for="SubCategory.CategoryId"
+                             asp-items="@(new SelectList(Model.CategoriesList,"Id","Name"))">
+                        
+                    </select>
+                    <span asp-validation-for="SubCategory.Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-3">
+                    <label asp-for="SubCategory.Name" class="col-form-label"></label>
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control" asp-for="SubCategory.Name" />
+                    <span asp-validation-for="SubCategory.Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-5 offset-3">
+                    <partial name="_CreateAndBackToListButtonsPartial" />
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class=" col-3 offset-1">
+      
+            <p>Existing SubCategories</p>
+            <div id="divSubCategoriesList"></div>
+       
+    </div>
+</div>
+<!--to make refresh on the client Side-->
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+    function updateSubCategoriesList() {
+        var selectedCateogey = document.getElementById("ddlCategories").value;
+        $list = $('#divSubCategoriesList');
+        $.ajax({
+            url: '/Admin/SubCategories/GetSupCategoriesJson/' + selectedCateogey,
+            type: 'GET',
+            dataType: 'text',
+            success: function (data) {
+                results = JSON.parse(data);
+                $list.html('');
+                $list.append('<ul class="list-group">')
+                for (i in results) {
+                    $list.append('<li class="list-group-item">' + results[i].text + '</li>')
+                }
+                $list.append('</ul>');
+            }
+
+        }
+        );
+
+    }
+
+
+    $(document).ready(function () {
+        updateSubCategoriesList();
+
+    });
+
+        $("#ddlCategories").on("change", function () {
+        updateSubCategoriesList();
+    });
+
+
+    </script>
+}
