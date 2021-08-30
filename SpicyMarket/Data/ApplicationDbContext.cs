@@ -15,5 +15,6 @@ namespace SpicyMarket.Data
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<MenuItem> MenuItems { get; set; }
     }
 }
