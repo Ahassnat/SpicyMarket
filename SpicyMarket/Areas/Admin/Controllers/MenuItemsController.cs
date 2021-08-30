@@ -42,7 +42,7 @@ namespace SpicyMarket.Areas.Admin.Controllers
             return View(MenuItemVM);
         }
 
-        [HttpGet]
+        [HttpPost]
         [ActionName("Create")]
         public async Task<IActionResult> CreatePost()
         {
