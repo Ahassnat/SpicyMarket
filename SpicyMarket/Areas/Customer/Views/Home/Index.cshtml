@@ -1,8 +1,33 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <br />
+@if (Model.Coupons.Count() > 0)
+{
+    <div class="border row ">
+        <div class="carousel" data-ride="carousel" data-interval="2500">
+            @for (int i = 0; i < Model.Coupons.Count(); i++)
+            {
+                var base64 = Convert.ToBase64String(Model.Coupons.ToList()[i].Picture);
+                //var imgsrc = "data:image/jpeg;base64," + base64;
+                var imgsrc = string.Format("data:image/jpeg;base64,{0}", base64);
+                if (i == 0)
+                {
+                    <div class="carousel-item active">
+                        <img src="@imgsrc" class="d-block w-100" height="50px" />
+                    </div>
+                }
+                else
+                {
+                    <div class="carousel-item ">
+                        <img src="@imgsrc" class="d-block w-100" height="50px" />
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
