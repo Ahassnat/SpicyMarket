@@ -50,5 +50,38 @@ namespace SpicyMarket.Areas.Admin.Controllers
             }
             return View(coupon);
         }
+
+
+
+        [HttpGet]
+        public async Task< IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var coupon = await _context.Coupons.FindAsync(id);
+            if (coupon == null) return NotFound();
+
+            return View(coupon);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(Coupon coupon)
+        {
+            if (ModelState.IsValid)
+            {
+                var files = HttpContext.Request.Form.Files; // store update file
+                if (files.Count > 0)
+                {
+                    byte[] picture = null;
+                    var fileStream = files[0].OpenReadStream();
+                    var memoryStream = new MemoryStream();
+                    fileStream.CopyTo(memoryStream);
+                    picture = memoryStream.ToArray();
+                    coupon.Picture = picture;
+                }
+                _context.Coupons.Update(coupon);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(coupon);
+        }
     }
 }
