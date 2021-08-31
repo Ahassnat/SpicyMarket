@@ -5,6 +5,7 @@
 }
 
     <br />
+<!-- Coupon List-->
 @if (Model.Coupons.Count() > 0)
 {
     <div class="border row ">
@@ -30,4 +31,69 @@
         </div>
     </div>
 }
+<br />
+<!--Main Category List-->
+<div class="container whiteBackground">
+    @foreach (var category in Model.Categories)
+    {
+        var menuItems = Model.MenuItems.Where(x => x.Category.Name.Equals(category.Name));
+        <div class="row">
+            @if (menuItems.Count() > 0)
+            {
+                <div class="col-12">
+                    <div class="row">
+                        <h3 class="text-success">@category.Name</h3>
+                    </div>
 
+                </div>
+                @foreach (var item in menuItems)
+                {
+                    <div class="col-12 border border-info rounded" style="margin-bottom:10px; margin-top:10px;padding:10px">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12">
+                                <img src="@item.Image" width="99%" style="border: 1px solid #eee69d; border-radius:5px" />
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                <div class="row pr-3">
+                                    <div class="col-8">
+                                        <label class="text-primary" style="font-size:21px">@item.Name</label>
+                                        @if (item.Spicy == "1")
+                                        {
+
+                                            <img src="~/images/SpicyImages/m.jpg" style="width:25px" title="Mild" />
+                                        }
+                                        @if (item.Spicy == "2")
+                                        {
+
+
+                                            <img src="~/images/SpicyImages/s.jpg" style="width:25px" title="Spicy" />
+                                        }
+                                        @if (item.Spicy == "3")
+                                        {
+
+                                            <img src="~/images/SpicyImages/v.jpg" style="width:25px" title="Very Spicy" />
+                                        }
+                                    </div>
+                                    <div class="col-4 text-right" style="color:maroon">
+                                        <h4>$ @item.Price</h4>
+                                    </div>
+                                </div>
+                                <div class="row col-12 text-justify d-none d-md-block">
+                                    <p>@Html.Raw(@item.Description)</p>
+                                </div>
+                                <div class="col-md-3 col-sm-12 offset-md-9 text-right">
+                                    <a class="btn btn-success form-control" asp-for="Details" asp-route-id="@item.Id">Details</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                }
+            }
+        </div>
+
+        <div class="p-4"></div>
+    }
+
+</div>
