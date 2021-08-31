@@ -1,0 +1,85 @@
+﻿@model Coupon
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2 class="text-info">Create Coupon</h2>
+<br />
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="whiteBackground border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="Name" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" class="form-control" asp-for="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="Picture" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="file" multiple class="form-control" asp-for="Picture" />
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="CouponType" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <select class="form-control" asp-for="CouponType" asp-items="Html.GetEnumSelectList<Coupon.ECouponType>()"></select>
+                <span asp-validation-for="CouponType" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="Discount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" class="form-control" asp-for="Discount" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="MinimumAmount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" class="form-control" asp-for="MinimumAmount" />
+                <span asp-validation-for="MinimumAmount" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="IsActive" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="checkbox" class="form-control" asp-for="IsActive" />
+                <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-5 offset-2">
+                <partial name="_CreateAndBackToListButtonsPartial" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<!--to make refresh on the client Side-->
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
