@@ -83,5 +83,35 @@ namespace SpicyMarket.Areas.Admin.Controllers
             }
             return View(coupon);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+            var coupon = await _context.Coupons.FindAsync(id);
+            if (coupon == null) return NotFound();
+
+            return View(coupon);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+            var coupon = await _context.Coupons.FindAsync(id);
+            if (coupon == null) return NotFound();
+
+            return View(coupon);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(Coupon coupon)
+        {
+            
+                _context.Coupons.Remove(coupon);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+           
+        }
     }
 }

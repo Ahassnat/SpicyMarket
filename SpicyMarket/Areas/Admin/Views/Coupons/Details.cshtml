@@ -1,0 +1,87 @@
+﻿@model Coupon
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2 class="text-info"> Coupon Details</h2>
+<br />
+
+    <div class="whiteBackground border">
+        @if (Model.Picture != null)
+        {
+            /* to change the byte of array for picture proparty and store it in base64*/
+            <img style="width:100%;height:100px;border-radius:5px;"
+                 src="@("data:image/jpeg;base64,"+ Convert.ToBase64String(Model.Picture))" />
+            <br />
+            <br />
+        }
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Picture" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="Name" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" readonly class="form-control" asp-for="Name" />
+
+            </div>
+        </div>
+
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="CouponType" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <select class="form-control" disabled asp-for="CouponType" asp-items="Html.GetEnumSelectList<Coupon.ECouponType>()"></select>
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="Discount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" readonly class="form-control" asp-for="Discount" />
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="MinimumAmount" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" readonly class="form-control" asp-for="MinimumAmount" />
+
+            </div>
+        </div>
+
+
+        <div class="row form-group">
+            <div class="col-2">
+                <label asp-for="IsActive" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input type="checkbox" class="form-control" disabled asp-for="IsActive" />
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-5 offset-2">
+                <partial name="_EditAndBackToListButtonsPartial" model="Model.Id" />
+            </div>
+        </div>
+    </div>
+
+
+<!--to make refresh on the client Side-->
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
