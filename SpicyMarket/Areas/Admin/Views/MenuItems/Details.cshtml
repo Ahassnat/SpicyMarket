@@ -1,0 +1,112 @@
+﻿@model MenuItemViewModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2 class="text-info"> Menu Item Details</h2>
+<br />
+
+    <input type="hidden" asp-for="MenuItem.Id" a />
+    <input type="hidden" asp-for="MenuItem.Image" />
+    <div class="whiteBackground border row">
+
+        <div class="col-8">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row form-group">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Name" class="col-form-label"></label>
+                </div>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control" asp-for="MenuItem.Name" />
+                  
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Description" class="col-form-label"></label>
+                </div>
+                <div class="col-8">
+                    <textarea type="text" class="form-control" asp-for="MenuItem.Description"></textarea>
+                
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Price" class="col-form-label"></label>
+                </div>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control" asp-for="MenuItem.Price" />
+                 
+                </div>
+            </div>
+
+      
+
+            <div class="row form-group">
+                <div class="col-4">
+                    <label asp-for="MenuItem.CategoryId" class="col-form-label"></label>
+                </div>
+                <div class="col-8">
+                    <select id="ddlCategories"
+                            class="form-control"
+                            disabled
+                            asp-for="MenuItem.CategoryId"
+                            asp-items="@(new SelectList(Model.CategoriesList,"Id","Name"))">
+                    </select>
+              
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4">
+                    <label asp-for="MenuItem.SubCategoryId" class="col-form-label"></label>
+                </div>
+                <div class="col-8">
+                    <select id="ddlSubCategories"
+                            class="form-control"
+                            disabled
+                            asp-for="MenuItem.SubCategoryId"
+                            asp-items="@(new SelectList(Model.SubCategoriesList,"Id","Name"))">
+                    </select>
+                  
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4">
+                    <label asp-for="MenuItem.Spicy" class="col-form-label"></label>
+                </div>
+                <div class="col-8">
+                    <select class="form-control"
+                            disabled
+                            asp-for="MenuItem.Spicy"
+                            asp-items="@Html.GetEnumSelectList<MenuItem.Espicy>()">
+                    </select>
+       
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-8 offset-4">
+                    <partial name="_EditAndBackToListButtonsPartial" model="Model.MenuItem.Id" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-3 offset-1">
+            <img src="@Model.MenuItem.Image" width="100%" style="border:1px solid #7c4242;border-radius:5px" />
+        </div>
+
+    </div>
+
+
+<!--to make refresh on the client Side-->
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

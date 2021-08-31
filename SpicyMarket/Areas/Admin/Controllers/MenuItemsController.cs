@@ -65,5 +65,122 @@ namespace SpicyMarket.Areas.Admin.Controllers
             }
             return View(MenuItemVM);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var menuItem =  _context.MenuItems.Include(x => x.Category)
+                                              .Include(x => x.SubCategory)
+                                              .SingleOrDefault(x=>x.Id == id);
+
+            if (menuItem == null) return NotFound();
+
+            MenuItemVM.MenuItem = menuItem;
+
+            MenuItemVM.SubCategoriesList = await _context.SubCategories
+                                                .Where(x => x.CategoryId == MenuItemVM.MenuItem.Id)
+                                                .ToListAsync();
+
+
+            return View(MenuItemVM);
+        }
+
+        [HttpPost]
+        [ActionName("Edit")]
+        public async Task<IActionResult> EditPost()
+        {
+            if (ModelState.IsValid)
+            {
+           
+                var files = HttpContext.Request.Form.Files;
+                if (files.Count > 0)
+                {
+                    string webRootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = DateTime.Now.ToFileTime().ToString() + Path.GetExtension(files[0].FileName);
+                    var fileStream = new FileStream(Path.Combine(webRootPath, "images", imageName), FileMode.Create);
+                    files[0].CopyTo(fileStream);
+                    string imagePath = @"/images/" + imageName;
+                    MenuItemVM.MenuItem.Image = imagePath;
+                }
+               
+                _context.MenuItems.Update(MenuItemVM.MenuItem);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(MenuItemVM);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var menuItem = _context.MenuItems.Include(x => x.Category)
+                                              .Include(x => x.SubCategory)
+                                              .SingleOrDefault(x => x.Id == id);
+
+            if (menuItem == null) return NotFound();
+
+            MenuItemVM.MenuItem = menuItem;
+
+            MenuItemVM.SubCategoriesList = await _context.SubCategories
+                                                .Where(x => x.CategoryId == MenuItemVM.MenuItem.Id)
+                                                .ToListAsync();
+
+
+            return View(MenuItemVM);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var menuItem = _context.MenuItems.Include(x => x.Category)
+                                              .Include(x => x.SubCategory)
+                                              .SingleOrDefault(x => x.Id == id);
+
+            if (menuItem == null) return NotFound();
+
+            MenuItemVM.MenuItem = menuItem;
+
+            MenuItemVM.SubCategoriesList = await _context.SubCategories
+                                                .Where(x => x.CategoryId == MenuItemVM.MenuItem.Id)
+                                                .ToListAsync();
+
+
+            return View(MenuItemVM);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeletePost()
+        {
+            /*if (ModelState.IsValid)
+            {
+
+                var files = HttpContext.Request.Form.Files;
+                if (files.Count > 0)
+                {
+                    string webRootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = DateTime.Now.ToFileTime().ToString() + Path.GetExtension(files[0].FileName);
+                    var fileStream = new FileStream(Path.Combine(webRootPath, "images", imageName), FileMode.Create);
+                    files[0].CopyTo(fileStream);
+                    string imagePath = @"/images/" + imageName;
+                    MenuItemVM.MenuItem.Image = imagePath;
+                }*/
+
+                _context.MenuItems.Remove(MenuItemVM.MenuItem);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+           
+        }
+
+
     }
 }
