@@ -34,13 +34,22 @@
 <br />
 <!--Main Category List-->
 <div class="container whiteBackground">
+    <ul id="menu-filter" class="menu-filter-list list-inline text-center">
+        <li class="active btn btn-secondary ml-1 mr-1" data-filter=".AllCategories">Show All</li>
+        @foreach (var category in Model.Categories)
+        {
+            <li class="btn btn-secondary ml-1 mr-1" data-filter="@category.Name.Replace(" ",string.Empty)">@category.Name</li>
+        }
+    </ul>
+    <!-- Category With there Menu-->
     @foreach (var category in Model.Categories)
     {
         var menuItems = Model.MenuItems.Where(x => x.Category.Name.Equals(category.Name));
         <div class="row">
             @if (menuItems.Count() > 0)
             {
-                <div class="col-12">
+                /* .Replace(" ",string.Empty) => this for remove space between words */
+                <div class="col-12 @category.Name.Replace(" ",string.Empty) AllCategories"> 
                     <div class="row">
                         <h3 class="text-success">@category.Name</h3>
                     </div>
@@ -97,3 +106,25 @@
     }
 
 </div>
+
+@section Scripts{
+<script>
+
+    $document.ready(
+        function ($) {
+            $("#menu-filter li").click(
+                function () {
+                    $("#menu-filter li").removeClass("active btn btn-secondary");
+                    $(this).addClass("active btn btn-secondary");
+                    var selectedFilter = $(this).data("filter");
+                    $(".AllCategories").fadeOut();
+                    setTimeout(function () {
+                        $(selectedFilter).slideDown();
+                    }, 300);
+                }
+            )
+        }
+    );
+
+</script>
+ }
