@@ -101,6 +101,25 @@
             </div>
         </div>
 
+        @if (User.IsInRole(SD.ManagerUser))
+        {
+            <div class="row form-group">
+                <div class="col-2">
+                </div>
+                <div class="col-5">
+                    <label class="form-check-label">
+                        <input type="radio" value="@SD.KitchenUser" name="rdUserRole" checked />@SD.KitchenUser
+                    </label>
+                    <label class="form-check-label">
+                        <input type="radio" value="@SD.ManagerUser" name="rdUserRole" checked />@SD.ManagerUser
+                    </label>
+                    <label class="form-check-label">
+                        <input type="radio" value="@SD.FrontDeskUser" name="rdUserRole" checked />@SD.FrontDeskUser
+                    </label>
+
+                </div>
+            </div>
+        }
 
 
         <div class="row form-group">

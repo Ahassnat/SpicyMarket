@@ -120,7 +120,21 @@ namespace SpicyMarket.Areas.Identity.Pages.Account
                         await _roleManager.CreateAsync(new IdentityRole(SD.CustomerEndUser));
                     }
 
-                    await _userManager.AddToRoleAsync(user, SD.ManagerUser);
+                    // take the value of role from Radio button came from Form of Register
+                    var role = HttpContext.Request.Form["edUserRole"].ToString(); //["edUserRole"] name of Radio button 
+                    if (string.IsNullOrEmpty(role))
+                    {
+                        await _userManager.AddToRoleAsync(user, SD.CustomerEndUser);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, role);
+                    }
+                    return RedirectToAction("Index", "User", new { area = "Admin" });
+
+                   
 
                     /* _logger.LogInformation("User created a new account with password.");
 
