@@ -121,7 +121,7 @@ namespace SpicyMarket.Areas.Identity.Pages.Account
                     }
 
                     // take the value of role from Radio button came from Form of Register
-                    var role = HttpContext.Request.Form["edUserRole"].ToString(); //["edUserRole"] name of Radio button 
+                    var role = HttpContext.Request.Form["rdUserRole"].ToString(); //["rdUserRole"] name of Radio button 
                     if (string.IsNullOrEmpty(role))
                     {
                         await _userManager.AddToRoleAsync(user, SD.CustomerEndUser);
@@ -132,7 +132,7 @@ namespace SpicyMarket.Areas.Identity.Pages.Account
                     {
                         await _userManager.AddToRoleAsync(user, role);
                     }
-                    return RedirectToAction("Index", "User", new { area = "Admin" });
+                    return RedirectToAction("Index", "Users", new { area = "Admin" });
 
                    
 
