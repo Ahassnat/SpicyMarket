@@ -28,5 +28,26 @@ namespace SpicyMarket.Areas.Admin.Controllers
             var userId = claim.Value;// return for userId how is make login 
             return View(await _context.ApplicationUsers.Where(x=>x.Id != userId).ToListAsync());
         }
-    }
+
+        public async Task<IActionResult> LockUnLock( string? id)
+        {
+            if (id == null) return NotFound();
+            var user = await _context.ApplicationUsers.FindAsync(id);
+            if (user == null) return NotFound();
+
+            if(user.LockoutEnd == null || user.LockoutEnd  < DateTime.Now)
+            {
+                user.LockoutEnd = DateTime.Now.AddYears(1000);
+            }
+            else
+            {
+                user.LockoutEnd = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        }
 }

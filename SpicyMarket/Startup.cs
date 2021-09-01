@@ -34,7 +34,7 @@ namespace SpicyMarket
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultUI()
+                .AddDefaultUI() // =>  its for redirect the user to the default interfaces like (Access Deniled page, login page,locked out Page.. etc)
                 .AddDefaultTokenProviders();
 
             services.AddControllersWithViews();
