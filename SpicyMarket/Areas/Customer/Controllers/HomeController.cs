@@ -4,11 +4,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpicyMarket.Data;
 using SpicyMarket.Models;
 using SpicyMarket.Models.ViewModel;
+using SpicyMarket.Utility;
 
 namespace SpicyMarket.Areas.Customer.Controllers
 {
@@ -23,6 +25,18 @@ namespace SpicyMarket.Areas.Customer.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            //set session 
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if(claim != null)
+            {
+                var shoppingCart = await _context.ShoppingCarts
+                                                .Where(x => x.ApplicationUserId == claim.Value)
+                                                .ToListAsync();
+                HttpContext.Session.SetInt32(SD.ShoppingCartCount, shoppingCart.Count);
+            }
+
+
             var indexViewModel = new IndexViewModel()
             {
                 Categories = await _context.Categories.ToListAsync(),
@@ -85,6 +99,9 @@ namespace SpicyMarket.Areas.Customer.Controllers
                 var count = _context.ShoppingCarts.Where(x =>
                                                         x.ApplicationUserId == shoppingCart.ApplicationUserId)
                                                   .ToList().Count;
+                // save count for user in session
+                HttpContext.Session.SetInt32(SD.ShoppingCartCount,count);
+
                 return RedirectToAction(nameof(Index));
 
             }
