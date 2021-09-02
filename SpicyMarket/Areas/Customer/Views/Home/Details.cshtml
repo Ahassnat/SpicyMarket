@@ -1,0 +1,124 @@
+﻿@model ShoppingCart
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2 class="text-info">Menu Item Details</h2>
+<br />
+<form asp-action="Details" method="post">
+    <input type="hidden" asp-for="MenuItemId"  />
+
+
+    <div class="whiteBackground border row">
+
+        <div class="col-md-8">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-12 pb-4 d-md-none">
+                <img src="@Model.MenuItem.Image" width="100%" style="border:1px solid #7c4242;border-radius:5px" />
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="MenuItem.Name" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input readonly type="text" class="form-control" asp-for="MenuItem.Name" />
+
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="MenuItem.Description" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <div class="border p-2" style="border-radius:5px">
+                        @Html.Raw(Model.MenuItem.Description)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="MenuItem.Price" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input readonly type="text" class="form-control" asp-for="MenuItem.Price" />
+
+                </div>
+            </div>
+
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="MenuItem.CategoryId" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input readonly asp-for="MenuItem.Category.Name" class="form-control" />
+
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="MenuItem.SubCategoryId" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input readonly asp-for="MenuItem.SubCategory.Name" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="MenuItem.Spicy" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <select class="form-control"
+                            disabled
+                            asp-for="MenuItem.Spicy"
+                            asp-items="@Html.GetEnumSelectList<MenuItem.Espicy>()">
+                    </select>
+                    <span asp-validation-for="MenuItem.Spicy" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label asp-for="Count" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input asp-for="Count" class="form-control" />
+                    <span asp-validation-for="Count" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+
+                </div>
+                <div class="col-md-4 mb-3">
+                    <a asp-action="Index" class="btn btn-dark form-control">Back to List</a>
+                </div>
+                <div class="col-md-4">
+                    <input type="submit" value="Add to Shopping Cart" class="btn btn-primary form-control" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-3 d-none d-md-block offset-1">
+            <img src="@Model.MenuItem.Image" width="100%" style="border:1px solid #7c4242;border-radius:5px" />
+        </div>
+
+    </div>
+</form>
+
+<!--to make refresh on the client Side-->
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+}
+

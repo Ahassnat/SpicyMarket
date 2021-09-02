@@ -91,7 +91,7 @@
                                     <p>@Html.Raw(@item.Description)</p>
                                 </div>
                                 <div class="col-md-3 col-sm-12 offset-md-9 text-right">
-                                    <a class="btn btn-success form-control" asp-for="Details" asp-route-id="@item.Id">Details</a>
+                                    <a class="btn btn-success form-control" asp-action="Details" asp-route-id="@item.Id">Details</a>
                                 </div>
                             </div>
                         </div>
