@@ -36,11 +36,11 @@ namespace SpicyMarket.Areas.Customer.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int itemId)
         {
             var menuItem = await _context.MenuItems.Include(x => x.Category)
                                                    .Include(x => x.SubCategory)
-                                                   .Where(x => x.Id == id)
+                                                   .Where(x => x.Id == itemId)
                                                    .FirstOrDefaultAsync();
 
             var shoppinCart = new ShoppingCart()
@@ -59,7 +59,6 @@ namespace SpicyMarket.Areas.Customer.Controllers
         {
             if (ModelState.IsValid)
             {
-                shoppingCart.Id = 0;
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 shoppingCart.ApplicationUserId = claim.Value;
