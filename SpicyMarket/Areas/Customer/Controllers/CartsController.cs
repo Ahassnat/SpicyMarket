@@ -46,6 +46,13 @@ namespace SpicyMarket.Areas.Customer.Controllers
                 item.MenuItem = _context.MenuItems.FirstOrDefault(x => x.Id == item.MenuItemId);
                 orderDetailsCartVM.OrderHeader.OrderTotal =
                                     orderDetailsCartVM.OrderHeader.OrderTotal + (item.MenuItem.Price * item.Count);
+
+                orderDetailsCartVM.OrderHeader.OrderTotal = Math.Round(orderDetailsCartVM.OrderHeader.OrderTotal, 2);
+                if(item.MenuItem.Description.Length > 75)
+                {
+                    item.MenuItem.Description = item.MenuItem.Description.Substring(0, 74);
+                }
+            
             }
             orderDetailsCartVM.OrderHeader.OrderTotalOrginal = orderDetailsCartVM.OrderHeader.OrderTotal;
             

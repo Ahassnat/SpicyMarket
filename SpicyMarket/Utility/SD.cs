@@ -15,9 +15,29 @@ namespace SpicyMarket.Utility
         public const string FrontDeskUser = "Front Desk";
         public const string CustomerEndUser = "Customer";
         #endregion
+
         #region Sessions Name 
         public const string ShoppingCartCount = "ShoppingCartCount";
-        #endregion 
+        #endregion
+
+        #region Areas Name 
+        public const string Admin = "Admin";
+        public const string Customer = "Customer";
+        #endregion
+
+        #region Controllers Name 
+        public const string Categories = "Admin";
+        public const string Coupons = "Customer";
+        public const string MenuItems = "MenuItems";
+        public const string SubCategories = "SubCategories";
+        #endregion
+
+        #region Actions Name 
+        public const string Index = "Index";
+        #endregion
+
+
+
 
     }
 }
