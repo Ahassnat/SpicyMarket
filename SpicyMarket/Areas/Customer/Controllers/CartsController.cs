@@ -24,7 +24,7 @@ namespace SpicyMarket.Areas.Customer.Controllers
             _context = context;
         }
         [BindProperty]
-        public OrderDetailsCartViewModel  orderDetailsCartVM { get; set; }
+        public OrderDetailsCartViewModel orderDetailsCartVM { get; set; }
         public IActionResult Index()
         {
             orderDetailsCartVM = new OrderDetailsCartViewModel()
@@ -37,8 +37,8 @@ namespace SpicyMarket.Areas.Customer.Controllers
 
             var shoppingCarts = _context.ShoppingCarts.
                                                         Where(x => x.ApplicationUserId == claim.Value);
-                                                        
-            if(shoppingCarts != null)
+
+            if (shoppingCarts != null)
             {
                 orderDetailsCartVM.ShoppingCartsList = shoppingCarts.ToList();
             }
@@ -49,18 +49,18 @@ namespace SpicyMarket.Areas.Customer.Controllers
                 orderDetailsCartVM.OrderHeader.OrderTotal = orderDetailsCartVM.OrderHeader.OrderTotal + (item.MenuItem.Price * item.Count);
 
                 orderDetailsCartVM.OrderHeader.OrderTotal = Math.Round(orderDetailsCartVM.OrderHeader.OrderTotal, 2);
-                if(item.MenuItem.Description.Length > 75)
+                if (item.MenuItem.Description.Length > 75)
                 {
                     item.MenuItem.Description = item.MenuItem.Description.Substring(0, 74);
                 }
-            
+
             }
             orderDetailsCartVM.OrderHeader.OrderTotalOrginal = orderDetailsCartVM.OrderHeader.OrderTotal;
             var CouponCodeSessionValue = HttpContext.Session.GetString(SD.ssCouponCode);
             if (CouponCodeSessionValue != null)
             {
                 orderDetailsCartVM.OrderHeader.CouponCode = CouponCodeSessionValue;
-                var couponFromDB = _context.Coupons.Where(x => 
+                var couponFromDB = _context.Coupons.Where(x =>
                                             x.Name.ToLower() == orderDetailsCartVM.OrderHeader.CouponCode.ToLower())
                                                    .FirstOrDefault();
 
@@ -70,10 +70,10 @@ namespace SpicyMarket.Areas.Customer.Controllers
             return View(orderDetailsCartVM);
         }
 
-        public IActionResult ApplyCoupon() 
+        public IActionResult ApplyCoupon()
         {
             var couponCode = orderDetailsCartVM.OrderHeader.CouponCode;
-            if(couponCode == null)
+            if (couponCode == null)
             {
                 couponCode = "";
             }
@@ -84,9 +84,46 @@ namespace SpicyMarket.Areas.Customer.Controllers
         public IActionResult RemoveCoupon()
         {
             //var couponCode = orderDetailsCartVM.OrderHeader.CouponCode;
-            
+
             HttpContext.Session.SetString(SD.ssCouponCode, string.Empty);
             return RedirectToAction(nameof(Index));
         }
+
+
+        public async Task<IActionResult> Plus(int cartId)
+        {
+            var shoppingCart = await _context.ShoppingCarts.FindAsync(cartId);
+            shoppingCart.Count += 1;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Minus(int cartId)
+        {
+            var shoppingCart = await _context.ShoppingCarts.FindAsync(cartId);
+            if (shoppingCart.Count > 1)
+            {
+                shoppingCart.Count -= 1;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Remove(int cartId)
+        {
+            var shoppingCart = await _context.ShoppingCarts.FindAsync(cartId);
+
+            _context.ShoppingCarts.Remove(shoppingCart);
+            await _context.SaveChangesAsync();
+
+            var count = _context.ShoppingCarts.Where(x => x.ApplicationUserId == shoppingCart.ApplicationUserId).ToList().Count;
+            HttpContext.Session.SetInt32(SD.ShoppingCartCount, count);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 }
