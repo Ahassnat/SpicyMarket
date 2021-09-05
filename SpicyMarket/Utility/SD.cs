@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpicyMarket.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace SpicyMarket.Utility
 
         #region Sessions Name 
         public const string ShoppingCartCount = "ShoppingCartCount";
+        public const string ssCouponCode = "CouponCode";
         #endregion
 
         #region Areas Name 
@@ -36,8 +38,35 @@ namespace SpicyMarket.Utility
         public const string Index = "Index";
         #endregion
 
+        #region Discount Price
+        public static double DiscountPrice(Coupon coupon, double orderTotalOrginal)
+        {
+            if (coupon == null)
+            {
+                return Math.Round(orderTotalOrginal, 2);
+            }
+            else
+            {
+                if (coupon.MinimumAmount > orderTotalOrginal)
+                {
+                    return Math.Round(orderTotalOrginal, 2);
+                }
+                else
+                {
+                    if (int.Parse(coupon.CouponType) == (int)Coupon.ECouponType.Dollar)
+                    {
+                        return Math.Round((orderTotalOrginal - coupon.Discount), 2);
+                    }
+                    else
+                    {
+                        return Math.Round(orderTotalOrginal - (orderTotalOrginal * (coupon.Discount / 100)), 2);
+                    }
+                }
+               
 
-
+            }
+        }
+        #endregion
 
     }
 }
