@@ -125,5 +125,54 @@ namespace SpicyMarket.Areas.Customer.Controllers
         }
 
 
+        #region lec 10 
+        public IActionResult Summary()
+        {
+            orderDetailsCartVM = new OrderDetailsCartViewModel()
+            {
+                OrderHeader = new Models.OrderHeader()
+            };
+            orderDetailsCartVM.OrderHeader.OrderTotal = 0;
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var appUser = _context.ApplicationUsers.Find(claim.Value);
+            orderDetailsCartVM.OrderHeader.PickUpName = appUser.Name;
+            orderDetailsCartVM.OrderHeader.PhoneNumber = appUser.PhoneNumber;
+            orderDetailsCartVM.OrderHeader.PickUpTime = DateTime.Now;
+
+
+            var shoppingCarts = _context.ShoppingCarts.
+                                                        Where(x => x.ApplicationUserId == claim.Value);
+
+            if (shoppingCarts != null)
+            {
+                orderDetailsCartVM.ShoppingCartsList = shoppingCarts.ToList();
+            }
+
+            foreach (var item in orderDetailsCartVM.ShoppingCartsList)
+            {
+                item.MenuItem = _context.MenuItems.FirstOrDefault(x => x.Id == item.MenuItemId);
+                orderDetailsCartVM.OrderHeader.OrderTotal = orderDetailsCartVM.OrderHeader.OrderTotal + (item.MenuItem.Price * item.Count);
+
+                orderDetailsCartVM.OrderHeader.OrderTotal = Math.Round(orderDetailsCartVM.OrderHeader.OrderTotal, 2);
+
+            }
+            orderDetailsCartVM.OrderHeader.OrderTotalOrginal = orderDetailsCartVM.OrderHeader.OrderTotal;
+            var CouponCodeSessionValue = HttpContext.Session.GetString(SD.ssCouponCode);
+            if (CouponCodeSessionValue != null)
+            {
+                orderDetailsCartVM.OrderHeader.CouponCode = CouponCodeSessionValue;
+                var couponFromDB = _context.Coupons.Where(x =>
+                                            x.Name.ToLower() == orderDetailsCartVM.OrderHeader.CouponCode.ToLower())
+                                                   .FirstOrDefault();
+
+                orderDetailsCartVM.OrderHeader.OrderTotal = SD.DiscountPrice(couponFromDB, orderDetailsCartVM.OrderHeader.OrderTotalOrginal);
+            }
+
+            return View(orderDetailsCartVM);
+        }
+        #endregion
+
     }
 }

@@ -1,0 +1,63 @@
+﻿@model OrderDetailsCartViewModel
+@{
+    ViewData["Title"] = "Summary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    @if (Model.ShoppingCartsList.Count > 0)
+    {
+        <div class="whiteBackground">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header container row bg-dark text-light ml-0 ">
+                        <div class="col-6">
+                            <i class="fas fa-shopping-cart"></i>&nbsp;Order Summary
+                        </div>
+                        <div class="col-6 text-right">
+                            <a class="btn btn-outline-primary btn-sm" asp-area="Customer" asp-controller="Carts" asp-action="Index">
+                                Back to Card
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="col-12   col-lg-4 offset-lg-8       col-md-6 offset-md-6">
+                            <button type="submit"
+                                    class="btn btn-success form-control">
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="whiteBackground">
+            <p class="text-danger"> No Items Added in Shopping Cart ....</p>
+        </div>
+    }
+</form>
+@section Scripts{
+    <script>
+
+        $(function () {
+            var txtCouponCode = document.getElementById("txtCouponCode").value
+            if (txtCouponCode.length > 0) {
+                document.getElementById("btnApplyCoupon").style.display = 'none';
+                document.getElementById("btnRemoveCoupon").style.display = '';
+            } else {
+                document.getElementById("btnApplyCoupon").style.display = '';
+                document.getElementById("btnRemoveCoupon").style.display = 'none';
+            }
+        })
+
+    </script>
+}
+
