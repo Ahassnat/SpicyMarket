@@ -159,10 +159,10 @@ namespace SpicyMarket.Areas.Customer.Controllers
 
             }
             orderDetailsCartVM.OrderHeader.OrderTotalOrginal = orderDetailsCartVM.OrderHeader.OrderTotal;
-            var CouponCodeSessionValue = HttpContext.Session.GetString(SD.ssCouponCode);
-            if (CouponCodeSessionValue != null)
+             HttpContext.Session.GetString(SD.ssCouponCode);
+            if (HttpContext.Session.GetString(SD.ssCouponCode) != null)
             {
-                orderDetailsCartVM.OrderHeader.CouponCode = CouponCodeSessionValue;
+                orderDetailsCartVM.OrderHeader.CouponCode = HttpContext.Session.GetString(SD.ssCouponCode);
                 var couponFromDB = _context.Coupons.Where(x =>
                                             x.Name.ToLower() == orderDetailsCartVM.OrderHeader.CouponCode.ToLower())
                                                    .FirstOrDefault();
