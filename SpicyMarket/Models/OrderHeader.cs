@@ -30,7 +30,7 @@ namespace SpicyMarket.Models
         public DateTime PickUpDate { get; set; } // for Date
         [Display(Name = "Coupon Code")]
         public string CouponCode { get; set; }
-        public string CouponCodeDiscount { get; set; }
+        public double CouponCodeDiscount { get; set; }
         public string Status { get; set; }
         public string PaymentStatus { get; set; }
         public string Comments { get; set; }

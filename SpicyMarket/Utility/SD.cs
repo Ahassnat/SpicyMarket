@@ -22,6 +22,21 @@ namespace SpicyMarket.Utility
         public const string ssCouponCode = "CouponCode";
         #endregion
 
+        #region Order Status
+        public const string StatusSubmitted = "Submitted";
+        public const string StatusInProcess = "Begin Prepared";
+        public const string StatusReady = "Ready to Pickup";
+        public const string StatusCompleted = "Completed";
+        public const string StatusCancelled = "Cancelled";
+        #endregion
+
+        #region Payment Status
+        public const string PaymetStatuPending = "Pending";
+        public const string PaymetStatuApproved = "Approved";
+        public const string PaymetStatuRejected = "Rejected";
+        #endregion
+
+
         #region Areas Name 
         public const string Admin = "Admin";
         public const string Customer = "Customer";

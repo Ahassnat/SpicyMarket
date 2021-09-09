@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpicyMarket.Data;
+using SpicyMarket.Models;
 using SpicyMarket.Models.ViewModel;
 using SpicyMarket.Utility;
 
@@ -153,9 +154,9 @@ namespace SpicyMarket.Areas.Customer.Controllers
             foreach (var item in orderDetailsCartVM.ShoppingCartsList)
             {
                 item.MenuItem = _context.MenuItems.FirstOrDefault(x => x.Id == item.MenuItemId);
-                orderDetailsCartVM.OrderHeader.OrderTotal = orderDetailsCartVM.OrderHeader.OrderTotal + (item.MenuItem.Price * item.Count);
+                orderDetailsCartVM.OrderHeader.OrderTotalOrginal  += (item.MenuItem.Price * item.Count);
 
-                orderDetailsCartVM.OrderHeader.OrderTotal = Math.Round(orderDetailsCartVM.OrderHeader.OrderTotal, 2);
+                orderDetailsCartVM.OrderHeader.OrderTotal = Math.Round(orderDetailsCartVM.OrderHeader.OrderTotalOrginal, 2);
 
             }
             orderDetailsCartVM.OrderHeader.OrderTotalOrginal = orderDetailsCartVM.OrderHeader.OrderTotal;
@@ -171,6 +172,79 @@ namespace SpicyMarket.Areas.Customer.Controllers
             }
 
             return View(orderDetailsCartVM);
+        }
+        #endregion
+
+        #region lec 11 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Summary")]
+        public async Task<IActionResult> SummaryPost()
+        {
+           
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+
+            orderDetailsCartVM.ShoppingCartsList =await _context.ShoppingCarts.
+                                                        Where(x => x.ApplicationUserId == claim.Value).ToListAsync();
+            //set Order Header proparety
+            orderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymetStatuPending;
+            orderDetailsCartVM.OrderHeader.OrderDate = DateTime.Now;
+            orderDetailsCartVM.OrderHeader.UserId = claim.Value;
+            orderDetailsCartVM.OrderHeader.Status = SD.PaymetStatuPending;
+            orderDetailsCartVM.OrderHeader.PickUpTime = Convert.ToDateTime
+                                        (orderDetailsCartVM.OrderHeader.PickUpDate.ToShortDateString()
+                                        + " " + 
+                                        orderDetailsCartVM.OrderHeader.PickUpTime.ToShortTimeString());
+            orderDetailsCartVM.OrderHeader.OrderTotalOrginal = 0;
+            //
+            _context.OrderHeaders.Add(orderDetailsCartVM.OrderHeader);
+            await _context.SaveChangesAsync();
+
+
+            foreach (var item in orderDetailsCartVM.ShoppingCartsList)
+            {
+                item.MenuItem = _context.MenuItems.FirstOrDefault(x => x.Id == item.MenuItemId);
+                var orderDetails = new OrderDetail()
+                {
+                    MenuItemId = item.MenuItemId,
+                    OrderId = orderDetailsCartVM.OrderHeader.Id,
+                    Description = item.MenuItem.Description,
+                    Name = item.MenuItem.Name,
+                    Price = item.MenuItem.Price,
+                    Count = item.Count
+
+                };
+                orderDetailsCartVM.OrderHeader.OrderTotalOrginal  += (item.MenuItem.Price * item.Count);
+                _context.OrderDetails.Add(orderDetails);
+                await _context.SaveChangesAsync();
+
+            }
+            if (HttpContext.Session.GetString(SD.ssCouponCode) != null)
+            {
+                orderDetailsCartVM.OrderHeader.CouponCode = HttpContext.Session.GetString(SD.ssCouponCode);
+                var couponFromDB = _context.Coupons.Where(x =>
+                                            x.Name.ToLower() == orderDetailsCartVM.OrderHeader.CouponCode.ToLower())
+                                                   .FirstOrDefault();
+
+                orderDetailsCartVM.OrderHeader.OrderTotal = SD.DiscountPrice(couponFromDB, orderDetailsCartVM.OrderHeader.OrderTotalOrginal);
+            }
+            else
+            {
+                orderDetailsCartVM.OrderHeader.OrderTotal =Math.Round(orderDetailsCartVM.OrderHeader.OrderTotalOrginal, 2);
+            }
+            orderDetailsCartVM.OrderHeader.CouponCodeDiscount =
+                   orderDetailsCartVM.OrderHeader.OrderTotalOrginal - orderDetailsCartVM.OrderHeader.OrderTotal;
+
+            // After all process of Pay the cart list item we must empty the shopping cart
+             _context.ShoppingCarts.RemoveRange(orderDetailsCartVM.ShoppingCartsList);
+            HttpContext.Session.SetInt32(SD.ShoppingCartCount, 0);
+            await _context.SaveChangesAsync();
+
+
+
+            return RedirectToAction("Index", "Home");
         }
         #endregion
 
