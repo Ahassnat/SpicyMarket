@@ -128,7 +128,8 @@
                     <div class="card-footer">
                         <div class="col-12   col-lg-4 offset-lg-8       col-md-6 offset-md-6">
                             <button type="submit"
-                                    class="btn btn-success form-control">
+                                    class="btn btn-success form-control"
+                                    onclick="return inputValidation()">
                                 Place Order
                             </button>
                         </div>
@@ -152,7 +153,7 @@
     <script>
         $(function () {
             var minDt = 0;
-            if (getTimeFromCurrentDay() >= '20:00') {
+            if (getTimeFromCurrentDay() >= '20.00') {
                 minDt = 1;
             }
             $("#datepicker").datepicker({ minDate: minDt, maxDate: "+1W" });
@@ -161,17 +162,17 @@
         function setPickupTime() {
             var selectedDate = document.getElementById("datepicker").value;
             var dt = new Date(selectedDate);
-            
+
 
             var today = new Date();
             var selectedTime = "";
             dt.setHours(0, 0, 0, 0);
             if (dt > today) {
-                selectedTime= '11:00 AM';
+                selectedTime = '11:00 AM';
             } else {
                 selectedTime: getTimeFromCurrentDay();
             }
-            $('#timepicker').timepicker( 'option', 'minTime', selectedTime );
+            $('#timepicker').timepicker('option', 'minTime', selectedTime);
 
         }
         function getTimeFromCurrentDay() {
@@ -185,12 +186,38 @@
                 } else {
                     minTime = (curDt.getHours() + 2).toString() + '00 PM';
                 }
-                
+
             }
             return minTime
         }
         $('#datepicker').change(function () { setPickupTime() });
 
+        function inputValidation() {
+            var name = document.getElementById("txtName").value;
+            var phone = document.getElementById("txtPhone").value;
+            var dt = document.getElementById("datePicker").value;
+            var time = document.getElementById("timePicker").value;
+
+            if (name.toString().Length == 0) {
+                alert("Please Enter Pickup Name");
+                return false;
+            }
+
+            else if (phone.toString().Length == 0) {
+                alert("Please Enter Pickup Phone");
+                return false;
+            }
+
+            else if (dt.toString().Length == 0) {
+                alert("Please select Pickup Date");
+                return false;
+            }
+
+            else if (time.toString().Length == 0) {
+                alert("Please select Pickup Time");
+                return false;
+            }
+        }
     </script>
 }
 
