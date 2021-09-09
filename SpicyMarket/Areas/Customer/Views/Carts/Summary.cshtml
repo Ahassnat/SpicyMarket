@@ -195,25 +195,25 @@
         function inputValidation() {
             var name = document.getElementById("txtName").value;
             var phone = document.getElementById("txtPhone").value;
-            var dt = document.getElementById("datePicker").value;
-            var time = document.getElementById("timePicker").value;
+            var dt = document.getElementById("datepicker").value;
+            var time = document.getElementById("timepicker").value;
 
-            if (name.toString().Length == 0) {
+            if (name.toString().length == 0) {
                 alert("Please Enter Pickup Name");
                 return false;
             }
 
-            else if (phone.toString().Length == 0) {
+            else if (phone.toString().length == 0) {
                 alert("Please Enter Pickup Phone");
                 return false;
             }
 
-            else if (dt.toString().Length == 0) {
+            else if (dt.toString().length == 0) {
                 alert("Please select Pickup Date");
                 return false;
             }
 
-            else if (time.toString().Length == 0) {
+            else if (time.toString().length == 0) {
                 alert("Please select Pickup Time");
                 return false;
             }
