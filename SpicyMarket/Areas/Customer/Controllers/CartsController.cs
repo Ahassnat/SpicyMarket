@@ -11,6 +11,7 @@ using SpicyMarket.Data;
 using SpicyMarket.Models;
 using SpicyMarket.Models.ViewModel;
 using SpicyMarket.Utility;
+using Stripe;
 
 namespace SpicyMarket.Areas.Customer.Controllers
 {
@@ -179,7 +180,7 @@ namespace SpicyMarket.Areas.Customer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
-        public async Task<IActionResult> SummaryPost()
+        public async Task<IActionResult> SummaryPost(string stripeToken)
         {
            
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -242,7 +243,36 @@ namespace SpicyMarket.Areas.Customer.Controllers
             HttpContext.Session.SetInt32(SD.ShoppingCartCount, 0);
             await _context.SaveChangesAsync();
 
+            // send the result of payments to strip dashboard 
+            var options = new Stripe.ChargeCreateOptions
+            {
+                // use *100 cuz the stripe works with (cents of $) not Dollars
+                Amount = Convert.ToInt32(orderDetailsCartVM.OrderHeader.OrderTotal * 100),
+                Currency ="usd",
+                Description = "Order Id : "+ orderDetailsCartVM.OrderHeader.Id,
+                Source= stripeToken
+            };
+            var service = new ChargeService();
+            var charge = service.Create(options);
+            if(charge.BalanceTransactionId == null)
+            {
+                orderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymetStatuRejected;
+            }
+            else
+            {
+                orderDetailsCartVM.OrderHeader.TransactionId = charge.BalanceTransactionId;
+            }
 
+            if(charge.Status.ToLower() == "succeeded")
+            {
+                orderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymetStatuApproved;
+                orderDetailsCartVM.OrderHeader.Status = SD.StatusSubmitted;
+            }
+            else
+            {
+                orderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymetStatuRejected;
+            }
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
         }

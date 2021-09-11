@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SpicyMarket.Services;
+using SpicyMarket.Utility;
+using Stripe;
 
 namespace SpicyMarket
 {
@@ -46,6 +48,7 @@ namespace SpicyMarket
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
             });
+            services.Configure<StripesSettings>(Configuration.GetSection("Stripe"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +69,8 @@ namespace SpicyMarket
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
 
             app.UseAuthentication();
             app.UseAuthorization();

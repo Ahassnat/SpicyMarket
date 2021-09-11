@@ -1,4 +1,6 @@
 ﻿@model OrderDetailsCartViewModel
+@using Microsoft.Extensions.Options
+@inject IOptions<SpicyMarket.Utility.StripesSettings> Stripe
 @{
     ViewData["Title"] = "Summary";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -127,6 +129,22 @@
 
                     <div class="card-footer">
                         <div class="col-12   col-lg-4 offset-lg-8       col-md-6 offset-md-6">
+                            @{ var orderTotalForStripe = Model.OrderHeader.OrderTotal * 100; } 
+
+                            <script src="https://checkout.stripe.com/checkout.js"
+                                    class="stripe-button"
+                                    data-key="@Stripe.Value.PublishableKey" 
+                                    data-amount="@orderTotalForStripe" 
+                                    data-name="Place Order"
+                                    data-description="Good Food , Good Mood"
+                                    data-locale="auto"
+                                    
+                                    data-allow-remmber-me="false"
+                                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png">
+                            </script>
+                            <script>
+                                document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
+                            </script>
                             <button type="submit"
                                     class="btn btn-success form-control"
                                     onclick="return inputValidation()">
