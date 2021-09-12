@@ -1,0 +1,105 @@
+﻿@model OrderDetailsViewModel
+
+<form method="post">
+    <div class="container row border ml-1" style="width:100%;padding:5px;border-radius:10px">
+        <br />
+        <input type="hidden" asp-for="OrderHeader.Id" />
+
+        <div class="col-lg-8 col-12" style="border-right:1px solid #bbb9b9">
+
+            <div class="row form-group">
+                <div class="col-3 ">
+                    <label asp-for="OrderHeader.PickUpName"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.PickUpName" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-3 ">
+                    <label asp-for="OrderHeader.ApplicationUser.Email"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.ApplicationUser.Email" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-3 ">
+                    <label asp-for="OrderHeader.PhoneNumber"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.PhoneNumber" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-3 ">
+                    <label asp-for="OrderHeader.OrderTotal"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.OrderTotal" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-3 ">
+                    <label asp-for="OrderHeader.PickUpTime"></label>
+                </div>
+                <div class="col-9">
+                    <input value="@Model.OrderHeader.PickUpTime.ToShortDateString() @Model.OrderHeader.PickUpTime.ToShortTimeString()" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-3 ">
+                    <label asp-for="OrderHeader.Comments"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.Comments" class="form-control" readonly />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-12">
+
+            <h4 class="d-flex justify-content-between align-content-center mb-3">
+                <span class="text-muted">Order Id: </span>
+                <span class="badge badge-secondary badge-pill">@Model.OrderHeader.Id</span>
+            </h4>
+            <ul class="list-group mb-3">
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>
+                            <h6 class="my-0">@item.Name</h6>
+                            <small class="text-muted">Quantity:  @item.Count</small>
+                        </div>
+                        <span class="text-muted">@(item.Price * item.Count)</span>
+                    </li>
+                }
+
+                @if (Model.OrderHeader.CouponCode != null)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div class="text-success">
+                            <h6 class="my-0">Promo Code</h6>
+                            <small class="text-muted">@Model.OrderHeader.CouponCode</small>
+                        </div>
+                        <span class="text-muted">- @Math.Round((Model.OrderHeader.OrderTotalOrginal - Model.OrderHeader.OrderTotal))</span>
+                    </li>
+                }
+
+            <li class="list-group-item d-flex justify-content-between bg-light">
+                <span class="text-info">Total (USD )</span>
+                <strong class="text-info">@Math.Round(Model.OrderHeader.OrderTotal)</strong>
+            </li>
+
+            </ul>
+            <button type="submit" class="btn btn-info form-control" disabled>@Model.OrderHeader.Status</button>
+        </div>
+
+    </div>
+</form>

@@ -274,7 +274,8 @@ namespace SpicyMarket.Areas.Customer.Controllers
             }
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            // return RedirectToAction("Index", "Home");
+            return RedirectToAction("Confirm", "Orders", new { id = orderDetailsCartVM.OrderHeader.Id});
         }
         #endregion
 

@@ -1,0 +1,35 @@
+﻿@model OrderDetailsViewModel
+@{
+    ViewData["Title"] = "Confirm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <br />
+    <div class="whiteBackground">
+        <div class="row px-3">
+
+            <div class="col-8">
+                <h2 class="text-info">Order Confirm</h2>
+            </div>
+
+            <div class="col-4 text-right">
+                <a asp-action="Index" asp-controller="Home" class="btn btn-success form-control">New Order</a>
+            </div>
+
+        </div>
+
+        @if(Model.OrderHeader != null)
+        {
+            <div class="p-3" style="color:maroon">
+                Your order Has Been Confirm ! Please check Details Below
+                <br />
+                Fell Free To Contact Us if You Have any Qustions 
+            </div>
+            <partial name="_IndividualOrderDetalis" model="Model"/>
+        }
+        else
+        {
+           <div class="text-danger">ERROR ... Plase Try Agin </div>
+        }
+    </div>
+
