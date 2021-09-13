@@ -20,7 +20,7 @@ namespace SpicyMarket.Models
         [Required]
         public double OrderTotalOrginal { get; set; } // the orginal total without discount or copuon dicaount 
         [Required]
-        [DisplayFormat(DataFormatString = "{0:c}")] // c => currency
+        [DisplayFormat(DataFormatString = "{0:C}")] // c => currency
         public double OrderTotal { get; set; }
         [Required]
         [Display(Name = "Pickup Time")]

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.css" rel="stylesheet" />
-   
+
 
 </head>
 <body class="webBackground">
@@ -22,12 +22,12 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">
                     <img src="~/images/SpicyImages/m.jpg" style="width:25px" />
-                    <img src="~/images/SpicyImages/s.jpg"  style="width:25px"/>
-                    <img src="~/images/SpicyImages/v.jpg"  style="width:25px"/>
+                    <img src="~/images/SpicyImages/s.jpg" style="width:25px" />
+                    <img src="~/images/SpicyImages/v.jpg" style="width:25px" />
                     <label class="text-info" style="cursor:pointer">
                         SpicyMarket
                     </label>
-                    
+
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,14 @@
                                 </div>
                             </li>
                         }
+
+                        @if (User.IsInRole(SD.CustomerEndUser) || User.IsInRole(SD.ManagerUser))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link " asp-area="Customer" asp-controller="Orders" asp-action="OrderHistory" >Order History</a>
+                            </li>
+                        }
+
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.ShoppingCartCount) == null)
                         {
                             <li class="nav-item ">
@@ -64,7 +72,7 @@
                         else
                         {
                             <li class="nav-item ">
-                                <a asp-area="Customer" asp-controller="Carts" asp-action="Index" class="text-white" style="text-decoration:none" >
+                                <a asp-area="Customer" asp-controller="Carts" asp-action="Index" class="text-white" style="text-decoration:none">
                                     <i class="fas fa-shopping-cart"></i>&nbsp;(@HttpContextAccessor.HttpContext.Session.GetInt32(SD.ShoppingCartCount))
 
                                 </a>
