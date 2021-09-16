@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OrderDetailsViewModel>
+﻿@model OrderListViewModel
 @{
     ViewData["Title"] = "OrderHistory";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,7 +15,7 @@
     </div>
 
     <div>
-        @if (Model.Count() == 0)
+        @if (Model.Orders.Count() == 0)
         {
             <p class="text-danger"> No Order History ...</p>
         }
@@ -24,19 +24,19 @@
             <table class="table table-striped border">
                 <tr class="table-secondary">
                     <th>
-                        @Html.DisplayNameFor(m => m.OrderHeader.Id)
+                        @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.Id)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(m => m.OrderHeader.PickUpName)
+                        @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.PickUpName)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(m => m.OrderHeader.ApplicationUser.Email)
+                        @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.ApplicationUser.Email)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(m => m.OrderHeader.PickUpTime)
+                        @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.PickUpTime)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(m => m.OrderHeader.OrderTotal)
+                        @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.OrderTotal)
                     </th>
                     <th>
                         Total Items
@@ -45,7 +45,7 @@
 
                     </th>
                 </tr>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Orders)
                 {
                     <tr>
                         <td>
@@ -80,6 +80,16 @@
                 }
 
             </table>
+
+            //pagination
+            <div page-model="@Model.PagingInfo"
+                 page-classes-enabled="true"
+                 page-class="btn border"
+                 page-class-normal="btn btn-light"
+                 page-class-selceted="btn btn-info active"
+                 class="btn-group float-right">
+            </div>
+            <br />
         }
     </div>
 </div>
