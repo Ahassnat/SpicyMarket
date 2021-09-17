@@ -94,5 +94,11 @@ namespace SpicyMarket.Areas.Customer.Controllers
             };
             return PartialView("_IndividualOrderDetalis", orderDetailsVM);
         }
+
+        public async Task<IActionResult> GetOrderStatus(int id)
+        {
+            var orderHeader = await _context.OrderHeaders.FindAsync(id);
+            return PartialView("_OrderStatus", orderHeader.Status);
+        }
     }
 }
