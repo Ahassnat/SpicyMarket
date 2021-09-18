@@ -100,5 +100,53 @@ namespace SpicyMarket.Areas.Customer.Controllers
             var orderHeader = await _context.OrderHeaders.FindAsync(id);
             return PartialView("_OrderStatus", orderHeader.Status);
         }
+
+        [Authorize(Roles = SD.ManagerUser +","+ SD.KitchenUser)]
+        public async Task<IActionResult> ManageOrder()
+        {
+            var orderDetalisVMList = new List<OrderDetailsViewModel>();
+            var orderHeaderList = await _context.OrderHeaders
+                                        .Where(x => x.Status == SD.StatusSubmitted || x.Status == SD.StatusInProcess)
+                                        .ToListAsync();
+            foreach (var orderHeader in orderHeaderList)
+            {
+                var orderDetailsVM = new OrderDetailsViewModel
+                {
+                    OrderHeader = orderHeader,
+                    OrderDetails = await _context.OrderDetails.Where(x => x.OrderId == orderHeader.Id).ToListAsync()
+                };
+                orderDetalisVMList.Add(orderDetailsVM);
+            }
+            return View(orderDetalisVMList.OrderBy(x => x.OrderHeader.PickUpTime).ToList());
+        }
+
+
+        [Authorize(Roles = SD.ManagerUser + "," + SD.KitchenUser)]
+        public async Task<IActionResult> OrderPrepare( int orderId)
+        {
+            var orderHeader = await _context.OrderHeaders.FindAsync(orderId);
+            orderHeader.Status = SD.StatusInProcess;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ManageOrder));
+        }
+
+        [Authorize(Roles = SD.ManagerUser + "," + SD.KitchenUser)]
+        public async Task<IActionResult> OrderReady(int orderId)
+        {
+            var orderHeader = await _context.OrderHeaders.FindAsync(orderId);
+            orderHeader.Status = SD.StatusReady;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ManageOrder));
+        }
+
+        [Authorize(Roles = SD.ManagerUser + "," + SD.KitchenUser)]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var orderHeader = await _context.OrderHeaders.FindAsync(orderId);
+            orderHeader.Status = SD.StatusCancelled;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ManageOrder));
+        }
+
     }
 }

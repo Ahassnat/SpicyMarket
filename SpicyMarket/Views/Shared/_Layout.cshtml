@@ -56,9 +56,35 @@
                         @if (User.IsInRole(SD.CustomerEndUser) || User.IsInRole(SD.ManagerUser))
                         {
                             <li class="nav-item">
-                                <a class="nav-link " asp-area="Customer" asp-controller="Orders" asp-action="OrderHistory" >Order History</a>
+                                <a class="nav-link " asp-area="Customer" asp-controller="Orders" asp-action="OrderHistory">Order History</a>
                             </li>
                         }
+
+
+
+                        @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOrder" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Orders
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownOrder">
+                                    @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.KitchenUser))
+                                    {
+                                        <a class="dropdown-item" asp-area="Customer" asp-controller="Orders" asp-action="ManageOrder">Manage Order</a>
+                                    }
+                                    @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.FrontDeskUser))
+
+                                    {
+                                        <a class="dropdown-item" asp-area="Customer" asp-controller="Orders" asp-action="PickupOrder">Pickup Order </a>
+                                    }
+                                </div>
+                            </li>
+                        }
+
+
+
 
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.ShoppingCartCount) == null)
                         {
