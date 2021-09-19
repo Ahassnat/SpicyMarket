@@ -151,7 +151,7 @@ namespace SpicyMarket.Areas.Customer.Controllers
 
         // Order Pickup
         [Authorize(Roles = SD.ManagerUser + "," + SD.FrontDeskUser)]
-        public async Task<IActionResult> OrderPickup(int pageNumber = 1)
+        public async Task<IActionResult> OrderPickup(int pageNumber = 1, string searchName=null,string searchPhone=null, string searchEmail=null)
         {
             var orderListVM = new OrderListViewModel()
             {
@@ -160,9 +160,41 @@ namespace SpicyMarket.Areas.Customer.Controllers
 
             var param = new StringBuilder();
             param.Append("/Customer/Orders/OrderPickup?pageNumber=:");
+            param.Append("&searchName=");
+            if(searchName != null)
+            {
+                param.Append(searchName); 
+            }
+            else
+            {
+                searchName = "";
+            }
 
-            var orderHeadersList = await _context.OrderHeaders.Include(x => x.ApplicationUser)
-                                                          .Where(x=>x.Status== SD.StatusReady)
+            param.Append("&searchPhone=");
+            if (searchPhone != null)
+            {
+                param.Append(searchPhone);
+            }
+            else
+            {
+                searchPhone = "";
+            }
+
+            param.Append("&searchEmail=");
+            if (searchEmail != null)
+            {
+                param.Append(searchEmail);
+            }
+            else
+            {
+                searchEmail = "";
+            }
+            var orderHeadersList = await _context.OrderHeaders.OrderByDescending(x=>x.OrderDate)
+                                                              .Include(x => x.ApplicationUser)
+                                                          .Where(x=>x.Status== SD.StatusReady && 
+                                                                 x.PickUpName.Contains(searchName) &&
+                                                                 x.PhoneNumber.Contains(searchPhone) &&
+                                                                 x.ApplicationUser.Email.Contains(searchEmail))
                                                           .ToListAsync();
             foreach (var orderHeader in orderHeadersList)
             {
