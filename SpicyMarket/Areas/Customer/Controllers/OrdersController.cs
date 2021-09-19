@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -146,6 +147,49 @@ namespace SpicyMarket.Areas.Customer.Controllers
             orderHeader.Status = SD.StatusCancelled;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ManageOrder));
+        }
+
+        // Order Pickup
+        [Authorize(Roles = SD.ManagerUser + "," + SD.FrontDeskUser)]
+        public async Task<IActionResult> OrderPickup(int pageNumber = 1)
+        {
+            var orderListVM = new OrderListViewModel()
+            {
+                Orders = new List<OrderDetailsViewModel>()
+            };
+
+            var param = new StringBuilder();
+            param.Append("/Customer/Orders/OrderPickup?pageNumber=:");
+
+            var orderHeadersList = await _context.OrderHeaders.Include(x => x.ApplicationUser)
+                                                          .Where(x=>x.Status== SD.StatusReady)
+                                                          .ToListAsync();
+            foreach (var orderHeader in orderHeadersList)
+            {
+                var orderDetailsVM = new OrderDetailsViewModel()
+                {
+                    OrderHeader = orderHeader,
+                    OrderDetails = await _context.OrderDetails.Where(x => x.OrderId == orderHeader.Id)
+                                                              .ToListAsync()
+                };
+                orderListVM.Orders.Add(orderDetailsVM);
+            }
+            // Paging Information 
+            var count = orderListVM.Orders.Count; // represent the Total page in PagingInfo Class
+            orderListVM.Orders = orderListVM.Orders.OrderByDescending(x => x.OrderHeader.Id)
+                                                   .Skip((pageNumber - 1) * pageSize)
+                                                   .Take(pageSize)
+                                                   .ToList();
+
+            orderListVM.PagingInfo = new PagingInfo()
+            {
+                CurrentPage = pageNumber,
+                RecordsPerPage = pageSize,
+                TotalRecords = count,
+                UrlParam = param.ToString()
+            };
+
+            return View(orderListVM);
         }
 
     }
