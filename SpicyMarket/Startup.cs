@@ -39,6 +39,11 @@ namespace SpicyMarket
                 .AddDefaultUI() // =>  its for redirect the user to the default interfaces like (Access Deniled page, login page,locked out Page.. etc)
                 .AddDefaultTokenProviders();
 
+            // face book authentication 
+            services.AddAuthentication().AddFacebook(opt => {
+                opt.AppId = "593410075127840";
+                opt.AppSecret = "d52d60a24064c2478b20209631cbac1f";
+            });
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSingleton<IEmailSender, EmailSender>();
