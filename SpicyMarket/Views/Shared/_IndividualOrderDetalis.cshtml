@@ -1,6 +1,6 @@
 ﻿@model OrderDetailsViewModel
 
-<form method="post">
+<form method="post" asp-action="OrderPickup" asp-controller="Orders" asp-area="Customer" asp-route-orderId="@Model.OrderHeader.Id">
     <div class="container row border ml-1" style="width:100%;padding:5px;border-radius:10px">
         <br />
         <input type="hidden" asp-for="OrderHeader.Id" />
@@ -92,13 +92,25 @@
                     </li>
                 }
 
-            <li class="list-group-item d-flex justify-content-between bg-light">
-                <span class="text-info">Total (USD )</span>
-                <strong class="text-info">@Math.Round(Model.OrderHeader.OrderTotal)</strong>
-            </li>
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <span class="text-info">Total (USD )</span>
+                    <strong class="text-info">@Math.Round(Model.OrderHeader.OrderTotal)</strong>
+                </li>
 
             </ul>
-            <button type="submit" class="btn btn-info form-control" disabled>@Model.OrderHeader.Status</button>
+
+            @if (Model.OrderHeader.Status == SD.StatusReady &&
+               (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.FrontDeskUser)))
+            {
+                <button type="submit" class="btn btn-success form-control" >
+                    <i class="fas fa-thumbs-up"></i> Confirm Pickup
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-info form-control" disabled>@Model.OrderHeader.Status</button>
+            }
+
         </div>
 
     </div>

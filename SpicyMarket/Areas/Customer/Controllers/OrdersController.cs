@@ -224,5 +224,16 @@ namespace SpicyMarket.Areas.Customer.Controllers
             return View(orderListVM);
         }
 
+
+        [Authorize(Roles = SD.ManagerUser + "," + SD.FrontDeskUser)]
+        [HttpPost]
+        public async Task<IActionResult> OrderPickup(int orderId)
+        {
+            var orderHeader = await _context.OrderHeaders.FindAsync(orderId);
+            orderHeader.Status = SD.StatusCompleted;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(OrderPickup));
+        }
+
     }
 }
